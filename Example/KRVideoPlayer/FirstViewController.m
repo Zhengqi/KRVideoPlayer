@@ -9,7 +9,7 @@
 #import "FirstViewController.h"
 #import "KRVideoPlayerController.h"
 
-@interface FirstViewController ()
+@interface FirstViewController () <KRViedoPlayerDelegate>
 
 @property (nonatomic, strong) KRVideoPlayerController *videoController;
 
@@ -46,6 +46,7 @@
     if (!self.videoController) {
         CGFloat width = [UIScreen mainScreen].bounds.size.width;
         self.videoController = [[KRVideoPlayerController alloc] initWithFrame:CGRectMake(0, 0, width, width*(9.0/16.0))];
+        self.videoController._delegate = self;
         __weak typeof(self)weakSelf = self;
         [self.videoController setDimissCompleteBlock:^{
             weakSelf.videoController = nil;
@@ -55,4 +56,8 @@
     self.videoController.contentURL = url;
 }
 
+- (void)videoPlaybackEnded
+{
+    NSLog(@"Video Playing Completed");
+}
 @end

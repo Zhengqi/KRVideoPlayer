@@ -39,6 +39,7 @@ static const CGFloat kVideoPlayerControllerAnimationTimeinterval = 0.3f;
         self.videoControl.frame = self.view.bounds;
         [self configObserver];
         [self configControlAction];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(moviePlaybackDidFinish) name:MPMoviePlayerPlaybackDidFinishNotification object:nil];
     }
     return self;
 }
@@ -206,7 +207,7 @@ static const CGFloat kVideoPlayerControllerAnimationTimeinterval = 0.3f;
 - (void)setProgressSliderMaxMinValues {
     CGFloat duration = self.duration;
     self.videoControl.progressSlider.minimumValue = 0.f;
-    self.videoControl.progressSlider.maximumValue = duration;
+    self.videoControl.progressSlider.maximumValue = duration-1;
 }
 
 - (void)progressSliderTouchBegan:(UISlider *)slider {
@@ -231,7 +232,7 @@ static const CGFloat kVideoPlayerControllerAnimationTimeinterval = 0.3f;
     double currentTime = floor(self.currentPlaybackTime);
     double totalTime = floor(self.duration);
     [self setTimeLabelValues:currentTime totalTime:totalTime];
-    self.videoControl.progressSlider.value = ceil(self.currentPlaybackTime);
+    self.videoControl.progressSlider.value = ceil(currentTime);
 }
 
 - (void)setTimeLabelValues:(double)currentTime totalTime:(double)totalTime {
@@ -244,12 +245,6 @@ static const CGFloat kVideoPlayerControllerAnimationTimeinterval = 0.3f;
     NSString *timeRmainingString = [NSString stringWithFormat:@"%02.0f:%02.0f", minutesRemaining, secondsRemaining];
     
     self.videoControl.timeLabel.text = [NSString stringWithFormat:@"%@/%@",timeElapsedString,timeRmainingString];
-}
-
-- (BOOL)videoDidCompletePlaying {
-    double currentTime = floor(self.currentPlaybackTime);
-    double totalTime = floor(self.duration);
-    return currentTime==totalTime?YES:NO;
 }
 
 - (void)startDurationTimer
@@ -296,5 +291,11 @@ static const CGFloat kVideoPlayerControllerAnimationTimeinterval = 0.3f;
     [self.videoControl layoutIfNeeded];
 }
 
+#pragma mark - Delegate
 
+-(void)moviePlaybackDidFinish{
+    if ([self._delegate respondsToSelector:@selector(videoPlaybackEnded)]){
+        [self._delegate videoPlaybackEnded];
+    }
+}
 @end

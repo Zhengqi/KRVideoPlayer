@@ -8,8 +8,13 @@
 
 @import MediaPlayer;
 
+@protocol KRViedoPlayerDelegate
+- (void)videoPlaybackEnded;
+@end
+
 @interface KRVideoPlayerController : MPMoviePlayerController
 
+@property (assign, nonatomic) id _delegate;
 @property (nonatomic, copy)void(^dimissCompleteBlock)(void);
 @property (nonatomic, assign) CGRect frame;
 
