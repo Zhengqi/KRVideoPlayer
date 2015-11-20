@@ -161,7 +161,7 @@ static const CGFloat kVideoPlayerControllerAnimationTimeinterval = 0.3f;
 {
     [self pause];
     self.videoControl.playButton.hidden = NO;
-    self.videoControl.pauseButton.hidden = YES; 
+    self.videoControl.pauseButton.hidden = YES;
 }
 
 - (void)closeButtonClick
@@ -231,7 +231,7 @@ static const CGFloat kVideoPlayerControllerAnimationTimeinterval = 0.3f;
     double currentTime = floor(self.currentPlaybackTime);
     double totalTime = floor(self.duration);
     [self setTimeLabelValues:currentTime totalTime:totalTime];
-    self.videoControl.progressSlider.value = ceil(currentTime);
+    self.videoControl.progressSlider.value = ceil(self.currentPlaybackTime);
 }
 
 - (void)setTimeLabelValues:(double)currentTime totalTime:(double)totalTime {
@@ -244,6 +244,12 @@ static const CGFloat kVideoPlayerControllerAnimationTimeinterval = 0.3f;
     NSString *timeRmainingString = [NSString stringWithFormat:@"%02.0f:%02.0f", minutesRemaining, secondsRemaining];
     
     self.videoControl.timeLabel.text = [NSString stringWithFormat:@"%@/%@",timeElapsedString,timeRmainingString];
+}
+
+- (BOOL)videoDidCompletePlaying {
+    double currentTime = floor(self.currentPlaybackTime);
+    double totalTime = floor(self.duration);
+    return currentTime==totalTime?YES:NO;
 }
 
 - (void)startDurationTimer
